@@ -2,14 +2,7 @@
 
 from agents.parser import ResumeParser
 from agents.analyzer import JDAnalyzer
-
-
-class GapFinder:
-    """Compares a resume against a job description to identify gaps."""
-
-    def find_gaps(self, resume, job_description):
-        """Return a list of Gap instances describing missing elements."""
-        raise NotImplementedError
+from agents.gap_finder import GapFinder
 
 
 class SuggestionGenerator:

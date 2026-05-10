@@ -123,9 +123,15 @@ class JobDescription(BaseModel):
 class Gap(BaseModel):
     """A single gap identified between a resume and a job description."""
 
-    category: str        # "skill" | "keyword" | "experience" | "education"
-    description: str
-    severity: str = "medium"   # low | medium | high
+    skill: str                          # The missing skill or requirement name
+    type: str = "hard"                  # hard | soft | experience | keyword
+    severity: str = "medium"           # critical | high | medium | low
+    reason: str = ""                    # Why this gap matters for the role
+    impact_on_fit: float = 50.0        # 0–100; used to sort gaps most-critical-first
+
+    # Kept for backward compatibility with the rest of the pipeline
+    category: str = ""                  # derived: hard/soft→"skill", experience→"experience"
+    description: str = ""              # mirrors reason
 
 
 class Suggestion(BaseModel):

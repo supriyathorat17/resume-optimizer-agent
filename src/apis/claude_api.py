@@ -30,14 +30,18 @@ class ClaudeAPIClient:
         user_message: str,
         model: Optional[str] = None,
         max_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
     ) -> str:
         """Send a message and return the assistant's text response."""
-        response = self._client.messages.create(
-            model=model or self.DEFAULT_MODEL,
-            max_tokens=max_tokens or self.DEFAULT_MAX_TOKENS,
-            system=system_prompt,
-            messages=[{"role": "user", "content": user_message}],
-        )
+        kwargs: Dict[str, Any] = {
+            "model": model or self.DEFAULT_MODEL,
+            "max_tokens": max_tokens or self.DEFAULT_MAX_TOKENS,
+            "system": system_prompt,
+            "messages": [{"role": "user", "content": user_message}],
+        }
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        response = self._client.messages.create(**kwargs)
         return response.content[0].text
 
     def complete_json(
