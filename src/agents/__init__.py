@@ -3,14 +3,7 @@
 from agents.parser import ResumeParser
 from agents.analyzer import JDAnalyzer
 from agents.gap_finder import GapFinder
-
-
-class SuggestionGenerator:
-    """Uses Claude to generate targeted rewrite suggestions for identified gaps."""
-
-    def generate(self, resume, gaps):
-        """Return a list of Suggestion instances addressing the provided gaps."""
-        raise NotImplementedError
+from agents.suggester import SuggestionGenerator
 
 
 class Validator:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ---------------------------------------------------------------------------
@@ -137,10 +137,25 @@ class Gap(BaseModel):
 class Suggestion(BaseModel):
     """An actionable suggestion for improving a resume section."""
 
-    section: str
-    original: Optional[str] = None
-    suggested: str
-    rationale: str
+    gap: str                        # The gap this suggestion addresses
+    suggested_revision: str         # Concrete bullet point or skill addition
+    reasoning: str                  # Why this revision closes the gap
+    section: str                    # experience | skills | projects | summary
+    priority: int = 5               # 1–10, higher = more impactful
+
+    # Backward-compat aliases — auto-populated from the primary fields
+    original: Optional[str] = None  # existing resume text being replaced (if any)
+    suggested: str = ""             # mirrors suggested_revision
+    rationale: str = ""             # mirrors reasoning
+
+    @model_validator(mode="after")
+    def _sync_compat_fields(self) -> "Suggestion":
+        """Keep suggested/rationale in sync with the primary fields."""
+        if not self.suggested:
+            self.suggested = self.suggested_revision
+        if not self.rationale:
+            self.rationale = self.reasoning
+        return self
 
 
 class OptimizationMetrics(BaseModel):
